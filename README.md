@@ -36,9 +36,8 @@ python main.py
    Spaces, commas or both can separate them, e.g. `kd ah 7s` or `kd, ah, 7s`.
 4. After each recommendation, type the card you received (e.g. `5h`), or press
    Enter to draw a random one. The prompt only accepts cards, not actions.
-5. When the game ends (bust, 21, stand, double or split finished), the program
-   returns to the algorithm menu with the same number of decks. Each new game
-   starts with a fresh shoe. Choose 0 in the algorithm menu to quit (Ctrl+C also works).
+5. When the game ends, the result is shown and you can choose m to go back to the algorithm menu (same number of decks, fresh shoe) 
+or q to quit. Also, you can choose 0 in the algorithm menu to quit (Ctrl+C also works).
 
 ## The algorithms
 

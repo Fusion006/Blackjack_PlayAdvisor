@@ -186,6 +186,15 @@ def play_split(game: Game, choice: str) -> None:
             continue
         play_hand(game, choice, can_split=False)
 
+def ask_after_game() -> bool:
+    """Return True to go back to the menu, False to quit."""
+    while True:
+        answer = input("\nGame finished. [m] back to menu, [q] quit: ").strip().lower()
+        if answer in ("m", "menu", ""):
+            return True
+        if answer in ("q", "quit"):
+            return False
+        print("Please type m (menu) or q (quit).")
 
 def main() -> None:
     print("Blackjack probability explorer")
@@ -209,7 +218,9 @@ def main() -> None:
                     print(f"Input error: {error}")
 
             play_hand(game, choice)
-            print("\nGame over. Back to the algorithm menu.")
+            if not ask_after_game():
+                print("Goodbye!")
+                return
     except (KeyboardInterrupt, EOFError):
         print("\nGoodbye!")
 
