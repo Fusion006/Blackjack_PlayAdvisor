@@ -7,7 +7,8 @@ compare how each one reasons about the same hand.
 You enter the dealer's up card and your two cards. The program removes them
 from a multi-deck shoe, shows the probability of each next card, and
 recommends an action. You then type the card you actually received (or press
-Enter for a random one) and it recommends again, until the hand ends.
+Enter for a random one) and it recommends again, until the hand ends. The program then goes back to
+the algorithm menu so you can play another game with the same number of decks.
 
 ## Project structure
 
@@ -27,13 +28,17 @@ Requires Python 3.10 or newer. There are no external dependencies.
 python main.py
 ```
 
-1. Choose the number of decks (1 to 8).
-2. Choose an algorithm (the same one is used for every step of the round).
+1. Choose the number of decks (1 to 8). This is asked once per program run;
+   restart the program to change it.
+2. Choose an algorithm. It is used for every step of that game.
 3. Enter three cards: dealer card, your first card, your second card.
    Cards are rank + suit, using ranks 2-10, J, Q, K, A and suits C, D, H, S.
    Spaces, commas or both can separate them, e.g. `kd ah 7s` or `kd, ah, 7s`.
 4. After each recommendation, type the card you received (e.g. `5h`), or press
    Enter to draw a random one. The prompt only accepts cards, not actions.
+5. When the game ends (bust, 21, stand, double or split finished), the program
+   returns to the algorithm menu with the same number of decks. Each new game
+   starts with a fresh shoe. Choose 0 in the algorithm menu to quit (Ctrl+C also works).
 
 ## The algorithms
 
@@ -179,5 +184,5 @@ or skewed deck, and reproducibility with a fixed random seed.
 - Monte Carlo is statistical: close decisions can flip between runs.
 - Monte Carlo does not simulate doubling after a split.
 - Split values in Expectimax are approximate (see above).
-- The shoe is treated as fixed: no reshuffling or card counting across rounds.
+- Each game starts from a fresh shoe of the chosen number of decks. Cards from earlier games are not remembered, so there is no card counting across games.
 - Only one player is modelled.

@@ -31,6 +31,8 @@ ALGORITHM_NAMES = {
     "6": "Pipeline (Expectimax -> Monte Carlo)",
 }
 
+QUIT_KEY = "0"
+
 
 def read_num_decks() -> int:
     while True:
@@ -44,9 +46,12 @@ def choose_algorithm() -> str:
     print("\nChoose the algorithm:")
     for key, name in ALGORITHM_NAMES.items():
         print(f"  {key}. {name}")
+    print(f"  {QUIT_KEY}. Quit")
     while True:
-        choice = input(f"Algorithm [1-{len(ALGORITHM_NAMES)}]: ").strip()
-        if choice in ALGORITHM_NAMES:
+        choice = input(
+            f"Algorithm [1-{len(ALGORITHM_NAMES)}, {QUIT_KEY} to quit]: "
+        ).strip()
+        if choice in ALGORITHM_NAMES or choice == QUIT_KEY:
             return choice
         print("Please choose a valid algorithm.")
 
@@ -183,21 +188,30 @@ def play_split(game: Game, choice: str) -> None:
 
 
 def main() -> None:
-    print("Blackjack probability explorer\n")
-    num_decks = read_num_decks()
-    choice = choose_algorithm()
-    print(f"\nUsing: {ALGORITHM_NAMES[choice]} with {num_decks} deck(s).")
+    print("Blackjack probability explorer")
+    num_decks = read_num_decks()          # asked once per program run
     print("Cards are rank+suit, e.g. 10s, ah, 6d (suits C/D/H/S).")
 
-    while True:
-        table_cards, player_cards = read_starting_cards()
-        try:
-            game = Game(table_cards, player_cards, num_decks)
-            break
-        except ValueError as error:
-            print(f"Input error: {error}")
+    try:
+        while True:
+            choice = choose_algorithm()
+            if choice == QUIT_KEY:
+                print("Goodbye!")
+                return
+            print(f"{ALGORITHM_NAMES[choice]} with {num_decks} deck(s).")
 
-    play_hand(game, choice)
+            while True:
+                table_cards, player_cards = read_starting_cards()
+                try:
+                    game = Game(table_cards, player_cards, num_decks)
+                    break
+                except ValueError as error:
+                    print(f"Input error: {error}")
+
+            play_hand(game, choice)
+            print("\nGame over. Back to the algorithm menu.")
+    except (KeyboardInterrupt, EOFError):
+        print("\nGoodbye!")
 
 
 if __name__ == "__main__":
