@@ -107,6 +107,7 @@ def recommend(game: Game, choice: str, can_split: bool) -> str:
         values = expectimax_values(cards, table, deck, can_double, split_ok)
         shown = ", ".join(f"{k}: {v:+.3f}" for k, v in values.items())
         print(f"Expected value per unit bet -> {shown}")
+        warn_if_close(values)
         action = expectimax_strategy(cards, table, deck, can_double, split_ok)
     elif choice == "5":
         return ask_manual_action(actions)
@@ -115,6 +116,7 @@ def recommend(game: Game, choice: str, can_split: bool) -> str:
             cards, table, deck, can_double, split_ok
         )
         print("Stage 1 EV - " + ", ".join(f"{k} {v:.3f}" for k, v in stage1.items()))
+        warn_if_close(stage1)
         if stage2:
             print("Stage 2 Monte Carlo (" + "/".join(shortlist) + ") - "
                   + ", ".join(f"{k} {v:.3f}" for k, v in stage2.items()))
@@ -185,6 +187,21 @@ def play_split(game: Game, choice: str) -> None:
             print(f"Split aces get one card: {', '.join(game.player_cards)} -> {total}")
             continue
         play_hand(game, choice, can_split=False)
+
+NEAR_TIE = 0.02  # warn if best and second-best differ by less than this
+
+
+def warn_if_close(values: dict[str, float]) -> None:
+    ranked = sorted(values.items(), key=lambda kv: kv[1], reverse=True)
+    if len(ranked) < 2:
+        return
+    (best, best_ev), (other, other_ev) = ranked[0], ranked[1]
+    gap = best_ev - other_ev
+    if gap < NEAR_TIE:
+        print(
+            f"Warning: close call. {best} ({best_ev:.3f}) vs {other} ({other_ev:.3f}), "
+            f"difference {gap:.3f}. Either choice is reasonable."
+        )
 
 def ask_after_game() -> bool:
     """Return True to go back to the menu, False to quit."""
